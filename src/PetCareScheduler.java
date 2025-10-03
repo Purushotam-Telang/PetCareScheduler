@@ -211,7 +211,37 @@ public class PetCareScheduler {
         }
     }
 
-    gti
+    private static void generateReports() {
+        System.out.println("Pets with upcoming appointments in next week.");
+
+        for (Pet p: pets.values()){
+            if(!p.getAppointmentList().isEmpty()){
+                System.out.println("Appointment for "+p.getPetName() + " :\n");
+                for(Appointment app: p.getAppointmentList()){
+                    if(app.getAppDate().isAfter(LocalDate.now().plusDays(7))){
+                        System.out.println(app.toString()+"\n");
+                    }
+                }
+            }
+
+        }
+
+        System.out.println("Pets overdue for a vet visit.");
+        for (Pet p: pets.values()){
+            if(!p.getAppointmentList().isEmpty()){
+
+                ArrayList<Appointment> sortedList = p.getAppointmentList();
+                sortedList.sort(Comparator.comparing(Appointment::getAppDate).reversed());
+                for(Appointment app: sortedList){
+                    if (app.getAppointmentType().equalsIgnoreCase("Visit") && app.getAppDate().isBefore(LocalDate.now().minusMonths(6))){
+                        System.out.println("Vet visit due for "+p.getPetName() + " :\n");
+                        break;
+                    }
+                }
+            }
+
+        }
+    }
 
     private static void savePetsToFile() {
         try{
